@@ -57,3 +57,13 @@ reference : [스프링 기반 REST API 개발, 백기선](https://www.inflearn.c
   * 해석에 대한 정보(문서 등)를 링크로 제공했는가?
 
 * 구현 : [HAL(Hypertext Application Language)](https://stateless.co/hal_specification.html) 스펙 참고
+
+## Entity 개발
+* `@EqualsAndHashCode(of = "id")` 적용해야 하는 이유
+  * Entity 간 상호참조 관계에서 stack overflow가 발생할 여지가 있습니다. 따라서 연관된 필드에 대한 참조를 피하고, id만을 비교해서 hashcode/equals를 사용해야 합니다.
+* `@DATA` 쓰지 않는 이유
+  * 위와 같은 맥락인데, 연관관계의 상호참조로 인해 발생하는 stack overflow를 예방하기 위함입니다.
+```text
+Stack Overflow란?
+- 재귀호출이 멈추지 않고 계속 호출됨으로써 스택 메모리가 가득찰 때까지 발생하는 현상입니다. 예를 들면 Parent 엔티티와 Child 엔티티가 양방향 연관관계의 상호참조하게 되면서 메모리가 한계에 도달할 수 있습니다.
+```
