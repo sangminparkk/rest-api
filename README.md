@@ -11,11 +11,14 @@ reference : [스프링 기반 REST API 개발, 백기선](https://www.inflearn.c
 * library
     * spring web
     * spring-boot-devtools
-    * spring security
     * h2 database
     * lombok
     * thymeleaf
     * hateoas
+    * JPA
+    * postgresql (고려중)
+    * restdocs
+    * spring security (개발 중에 추가할 예정)
 
 ## Git Branch 전략
 * main(=develop)
