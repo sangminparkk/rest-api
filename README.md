@@ -33,8 +33,24 @@ reference : [스프링 기반 REST API 개발, 백기선](https://www.inflearn.c
 ## Things I am doing
 일주일 내로 끝냅니다. 불가능은 없다.
 
-| 날짜    | 업무      | 비고                                                                  |
-|-------|---------|---------------------------------------------------------------------|
-| 10/28 | 프로젝트 시작 | |
-|  |         | |
+| 날짜    | 업무      | 비고                                    |
+|-------|---------|---------------------------------------|
+| 10/28 | 프로젝트 시작 | 어떻게 해서 REST API를 개발할 것인가? (Feat. HAL) |
+|  |         |                                       |
 
+## REST API
+* API : Application Programming Interface
+* REST : REpresentational State Transfer, **시스템 각각의 독립적인 진화를 보장**하기 위한 방법
+* REST API : REST 아키텍처 스타일을 따르는 API (ex. developer-github)
+
+* 아키텍쳐 스타일
+  * Uniform Interface
+    * Self-descriptive message : 메세지가 변해도 클라이언트가 메세지를 보고 해석이 가능해야 합니다. 확장 가능한 커뮤니케이션인가?!
+    * HATEOAS(Hypermisa As The Engin Of Application State) : 현재 상태 기준, 하이퍼미디어(링크)를 통해 상태 변화가 가능해야 합니다. 링크 정보를 동적으로 바꿀 수 있는가?!
+
+* REST API 체크 포인트  
+응답 예시를 통해 아래 두가지를 만족하는지부터 빠르게 체크합니다.
+  * 메세지만 보고도 응답을 해석할 수 있는지?
+  * 해석에 대한 정보(문서 등)를 링크로 제공했는가?
+
+* 구현 : [HAL(Hypertext Application Language)](https://stateless.co/hal_specification.html) 스펙 참고
