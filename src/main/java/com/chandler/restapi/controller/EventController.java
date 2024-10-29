@@ -18,6 +18,7 @@ public class EventController {
     @PostMapping("/api/events")
     public ResponseEntity createEvent(@RequestBody Event event) throws JsonProcessingException {
         URI createdUri = linkTo(methodOn(EventController.class).createEvent(null)).slash("{id}").toUri();
+        event.setId(1L);
         return ResponseEntity.created(createdUri).body(event);
     }
 }
