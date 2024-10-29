@@ -64,7 +64,7 @@ class EventControllerTest {
     }
 
     @Test
-    @DisplayName("이벤트 생성 - 입력값 에러 발생시 오류 처리")
+    @DisplayName("이벤트 생성 - 입력값 외 데이터에 대하여 bad request(400)")
     public void createEvent_Bad_Request() throws Exception {
         //given
         Event event = Event.builder()
@@ -91,5 +91,4 @@ class EventControllerTest {
                 .andExpect(status().isBadRequest())
         ;
     }
-
 }
