@@ -1,5 +1,6 @@
 package com.chandler.restapi.controller;
 
+import com.chandler.restapi.domain.Event;
 import com.chandler.restapi.request.EventDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
@@ -60,6 +61,35 @@ class EventControllerTest {
                 .andExpect(jsonPath("$.eventStatus").value(DRAFT.name()))
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE));
+    }
+
+    @Test
+    @DisplayName("이벤트 생성 - 입력값 에러 발생시 오류 처리")
+    public void createEvent_Bad_Request() throws Exception {
+        //given
+        Event event = Event.builder()
+                .id(100L)
+                .name("Event")
+                .description("Event with Spring")
+                .beginEnrollmentDateTime(LocalDateTime.of(2024, 10, 29, 1, 2))
+                .closeEnrollmentDateTime(LocalDateTime.of(2024, 10, 30, 1, 2))
+                .beginEventDateTime(LocalDateTime.of(2024, 11, 25, 1, 2))
+                .closeEventDateTime(LocalDateTime.of(2024, 11, 26, 1, 2))
+                .basePrice(100)
+                .maxPrice(200)
+                .limitOfEnrollment(100)
+                .location("서울 OOO구 OOO센터")
+                .offline(true)
+                .free(true)
+                .build();
+
+        mockMvc.perform(post("/api/events")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(event))
+                        .accept(MediaTypes.HAL_JSON_VALUE))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
     }
 
 }
