@@ -1,6 +1,8 @@
 package com.chandler.restapi.controller;
 
 import com.chandler.restapi.domain.Event;
+import com.chandler.restapi.repository.EventRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,14 +14,18 @@ import java.net.URI;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/api/events", produces = HAL_JSON_VALUE)
 public class EventController {
 
+    private final EventRepository eventRepository;
+
     @PostMapping
     public ResponseEntity createEvent(@RequestBody Event event) {
-        URI createdUri = linkTo(EventController.class).slash("{id}").toUri();
-        event.setId(1L);
-        return ResponseEntity.created(createdUri).body(event);
+        Event savedEvent = eventRepository.save(event);
+        URI createdUri = linkTo(EventController.class).slash(savedEvent.getId()).toUri();
+
+        return ResponseEntity.created(createdUri).body(savedEvent);
     }
 }
