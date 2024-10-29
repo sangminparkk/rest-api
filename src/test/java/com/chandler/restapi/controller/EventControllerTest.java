@@ -1,26 +1,28 @@
 package com.chandler.restapi.controller;
 
 import com.chandler.restapi.domain.Event;
-import com.chandler.restapi.repository.EventRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
+import static com.chandler.restapi.domain.EventStatus.BEGAN_ENROLLMENT;
+import static com.chandler.restapi.domain.EventStatus.DRAFT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest
+@SpringBootTest
+@AutoConfigureMockMvc
 class EventControllerTest {
 
     @Autowired
@@ -28,9 +30,6 @@ class EventControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @MockBean
-    private EventRepository eventRepository;
 
     @Test
     @DisplayName("이벤트 생성 후 json 데이터 응답")
@@ -47,10 +46,10 @@ class EventControllerTest {
                 .maxPrice(200)
                 .limitOfEnrollment(100)
                 .location("서울 OOO구 OOO센터")
+                .offline(true)
+                .free(true)
+                .eventStatus(BEGAN_ENROLLMENT)
                 .build();
-
-        event.setId(1L);
-        Mockito.when(eventRepository.save(event)).thenReturn(event);
 
         mockMvc.perform(post("/api/events")
                         .contentType(APPLICATION_JSON)
@@ -61,6 +60,8 @@ class EventControllerTest {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.name").value("Event"))
                 .andExpect(jsonPath("$.description").value("Event with Spring"))
+                .andExpect(jsonPath("$.offline").value(Matchers.not(true)))
+                .andExpect(jsonPath("$.eventStatus").value(DRAFT.name()))
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE));
     }
