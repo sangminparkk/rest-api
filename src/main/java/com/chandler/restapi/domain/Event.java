@@ -1,12 +1,11 @@
 package com.chandler.restapi.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Builder
@@ -25,8 +24,6 @@ public class Event {
 
     private String description;
 
-    private String password;
-
     private String location; // on/off meeting
 
     private boolean offline;
@@ -39,6 +36,7 @@ public class Event {
 
     private int maxPrice;
 
+    @Enumerated(value = STRING)
     private EventStatus eventStatus;
 
     private LocalDateTime beginEnrollmentDateTime;
