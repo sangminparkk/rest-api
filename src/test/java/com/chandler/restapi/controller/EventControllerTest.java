@@ -1,6 +1,6 @@
 package com.chandler.restapi.controller;
 
-import com.chandler.restapi.domain.Event;
+import com.chandler.restapi.request.EventDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
-import static com.chandler.restapi.domain.EventStatus.BEGAN_ENROLLMENT;
 import static com.chandler.restapi.domain.EventStatus.DRAFT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,10 +31,10 @@ class EventControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("이벤트 생성 후 json 데이터 응답")
-    public void createEvent_with_json() throws Exception {
+    @DisplayName("이벤트 생성 후 정상 응답 처리")
+    public void createEvent() throws Exception {
         //given
-        Event event = Event.builder()
+        EventDto eventDto = EventDto.builder()
                 .name("Event")
                 .description("Event with Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2024, 10, 29, 1, 2))
@@ -46,14 +45,11 @@ class EventControllerTest {
                 .maxPrice(200)
                 .limitOfEnrollment(100)
                 .location("서울 OOO구 OOO센터")
-                .offline(true)
-                .free(true)
-                .eventStatus(BEGAN_ENROLLMENT)
                 .build();
 
         mockMvc.perform(post("/api/events")
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(event))
+                        .content(objectMapper.writeValueAsString(eventDto))
                         .accept(MediaTypes.HAL_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isCreated())
