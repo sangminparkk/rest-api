@@ -37,7 +37,7 @@ public class Event {
     private int maxPrice;
 
     @Enumerated(value = STRING)
-    private EventStatus eventStatus;
+    private EventStatus eventStatus = EventStatus.DRAFT;
 
     private LocalDateTime beginEnrollmentDateTime;
 
