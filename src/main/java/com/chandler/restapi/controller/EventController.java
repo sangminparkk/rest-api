@@ -1,5 +1,6 @@
 package com.chandler.restapi.controller;
 
+import com.chandler.restapi.config.EventValidator;
 import com.chandler.restapi.domain.Event;
 import com.chandler.restapi.repository.EventRepository;
 import com.chandler.restapi.request.EventDto;
@@ -27,9 +28,14 @@ public class EventController {
 
     private final EventRepository eventRepository;
     private final ModelMapper modelMapper;
+    private final EventValidator eventValidator;
 
     @PostMapping
     public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().build();
+        }
+        eventValidator.validate(eventDto, errors);
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
