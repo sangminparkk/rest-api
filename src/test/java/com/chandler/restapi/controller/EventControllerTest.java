@@ -95,8 +95,33 @@ class EventControllerTest {
     @Test
     @DisplayName("입력값 오류 - not Empty")
     public void createEvent_Bad_Request_Empty_Input() throws Exception {
-        //given
         EventDto eventDto = EventDto.builder().build();
+
+        mockMvc.perform(post("/api/events")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(eventDto))
+                        .accept(MediaTypes.HAL_JSON_VALUE))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
+    }
+
+    @Test
+    @DisplayName("입력값 오류 - 잘못된 입력값")
+    public void createEvent_Bad_Request_With_Wrong_Input() throws Exception {
+        //given
+        EventDto eventDto = EventDto.builder()
+                .name("Event")
+                .description("Event with Spring")
+                .beginEnrollmentDateTime(LocalDateTime.of(2024, 10, 29, 1, 2))
+                .closeEnrollmentDateTime(LocalDateTime.of(2024, 10, 30, 1, 2))
+                .beginEventDateTime(LocalDateTime.of(2024, 11, 25, 1, 2))
+                .closeEventDateTime(LocalDateTime.of(2024, 11, 24, 1, 2)) // earlier than begin
+                .basePrice(1000) // cannot be bigger than max
+                .maxPrice(200)
+                .limitOfEnrollment(100)
+                .location("서울 OOO구 OOO센터")
+                .build();
 
         mockMvc.perform(post("/api/events")
                         .contentType(APPLICATION_JSON)
