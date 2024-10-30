@@ -64,7 +64,7 @@ class EventControllerTest {
     }
 
     @Test
-    @DisplayName("이벤트 생성 - 입력값 외 데이터에 대하여 bad request(400)")
+    @DisplayName("입력 받을 수 없는 값을 사용한 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request() throws Exception {
         //given
         Event event = Event.builder()
@@ -93,21 +93,7 @@ class EventControllerTest {
     }
 
     @Test
-    @DisplayName("입력값 오류 - not Empty")
-    public void createEvent_Bad_Request_Empty_Input() throws Exception {
-        EventDto eventDto = EventDto.builder().build();
-
-        mockMvc.perform(post("/api/events")
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(eventDto))
-                        .accept(MediaTypes.HAL_JSON_VALUE))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-        ;
-    }
-
-    @Test
-    @DisplayName("입력값 오류 - 잘못된 입력값")
+    @DisplayName("입력 값이 비어 있는 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request_With_Wrong_Input() throws Exception {
         //given
         EventDto eventDto = EventDto.builder()
@@ -122,6 +108,20 @@ class EventControllerTest {
                 .limitOfEnrollment(100)
                 .location("서울 OOO구 OOO센터")
                 .build();
+
+        mockMvc.perform(post("/api/events")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(eventDto))
+                        .accept(MediaTypes.HAL_JSON_VALUE))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
+    }
+
+    @Test
+    @DisplayName("입력 값이 잘못된 경우에 에러가 발생하는 테스트")
+    public void createEvent_Bad_Request_Empty_Input() throws Exception {
+        EventDto eventDto = EventDto.builder().build();
 
         mockMvc.perform(post("/api/events")
                         .contentType(APPLICATION_JSON)
