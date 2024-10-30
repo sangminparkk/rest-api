@@ -91,4 +91,20 @@ class EventControllerTest {
                 .andExpect(status().isBadRequest())
         ;
     }
+
+    @Test
+    @DisplayName("입력값 오류 - not Empty")
+    public void createEvent_Bad_Request_Empty_Input() throws Exception {
+        //given
+        EventDto eventDto = EventDto.builder().build();
+
+        mockMvc.perform(post("/api/events")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(eventDto))
+                        .accept(MediaTypes.HAL_JSON_VALUE))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
+    }
+
 }
