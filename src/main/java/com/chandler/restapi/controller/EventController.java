@@ -41,6 +41,8 @@ public class EventController {
         }
 
         Event event = modelMapper.map(eventDto, Event.class);
+        // 비지로직이 여기에 구현되어야 할듯? > 나이스
+        event.update();
         Event savedEvent = eventRepository.save(event);
         URI createdUri = linkTo(EventController.class).slash(savedEvent.getId()).toUri();
         return ResponseEntity.created(createdUri).body(savedEvent);
