@@ -42,13 +42,8 @@ class EventTest {
         assertNotNull(event);
     }
 
-//    @CsvSource({
-//            "0, 0, true",
-//            "100, 0, false",
-//            "0, 100, false"
-//    }) // Type safe 하지 않음
     @ParameterizedTest
-    @MethodSource(value = "parametersForTestFree") // "paramsForTestFree" 를 안쓰고도 적용되는지 체크
+    @MethodSource(value = "parametersForTestFree") //TODO: value 생략 가능성 체크하기
     @DisplayName("basePrice와 maxPrice가 둘다 0이면 무료입니다")
     public void testFree(int basePrice, int maxPrice, boolean isFree) {
         //given
