@@ -94,7 +94,7 @@ class EventControllerTest {
 
     @Test
     @DisplayName("입력 값이 비어 있는 경우에 에러가 발생하는 테스트")
-    public void createEvent_Bad_Request_With_Wrong_Input() throws Exception {
+    public void createEvent_Bad_Request_With_Empty_Input() throws Exception {
         //given
         EventDto eventDto = EventDto.builder()
                 .build();
@@ -109,8 +109,8 @@ class EventControllerTest {
     }
 
     @Test
-    @DisplayName("입력 값이 잘못된 경우에 에러가 발생하는 테스트")
-    public void createEvent_Bad_Request_Empty_Input() throws Exception {
+    @DisplayName("입력 값이 잘못된 경우에 에러가 발생하는 테스트") // GlobalErrors 까지만 커버 가능
+    public void createEvent_Bad_Request_Wrong_Input() throws Exception {
         EventDto eventDto = EventDto.builder()
                 .name("Event")
                 .description("Event with Spring")
@@ -135,5 +135,7 @@ class EventControllerTest {
                 .andExpect(jsonPath("$[0].code").exists())
         ;
     }
+
+    //TODO: FieldErrors 에 대한 디테일 검증 필요
 
 }
