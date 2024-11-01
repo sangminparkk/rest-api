@@ -4,10 +4,12 @@ import com.chandler.restapi.config.EventValidator;
 import com.chandler.restapi.domain.Event;
 import com.chandler.restapi.repository.EventRepository;
 import com.chandler.restapi.request.EventDto;
+import com.chandler.restapi.response.EventResource;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +32,9 @@ public class EventController {
     private final ModelMapper modelMapper;
     private final EventValidator eventValidator;
 
+    /**
+     * event > event Resource 로 변환을 해야합니다
+     */
     @PostMapping
     public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
         if (errors.hasErrors()) {
@@ -41,10 +46,14 @@ public class EventController {
         }
 
         Event event = modelMapper.map(eventDto, Event.class);
-        // 비지로직이 여기에 구현되어야 할듯? > 나이스
         event.update();
         Event savedEvent = eventRepository.save(event);
-        URI createdUri = linkTo(EventController.class).slash(savedEvent.getId()).toUri();
-        return ResponseEntity.created(createdUri).body(savedEvent);
+        WebMvcLinkBuilder selfLinkBuilder = linkTo(EventController.class).slash(savedEvent.getId());
+        URI createdUri = selfLinkBuilder.toUri();
+        EventResource eventResource = new EventResource(savedEvent);
+        eventResource.add(linkTo(EventController.class).withRel("query-events"));
+        eventResource.add(selfLinkBuilder.withSelfRel());
+        eventResource.add(selfLinkBuilder.withRel("update-event"));
+        return ResponseEntity.created(createdUri).body(eventResource);
     }
 }
