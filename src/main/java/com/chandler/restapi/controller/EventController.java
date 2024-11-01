@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,9 +31,6 @@ public class EventController {
     private final ModelMapper modelMapper;
     private final EventValidator eventValidator;
 
-    /**
-     * event > event Resource 로 변환을 해야합니다
-     */
     @PostMapping
     public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
         if (errors.hasErrors()) {
@@ -48,12 +44,9 @@ public class EventController {
         Event event = modelMapper.map(eventDto, Event.class);
         event.update();
         Event savedEvent = eventRepository.save(event);
-        WebMvcLinkBuilder selfLinkBuilder = linkTo(EventController.class).slash(savedEvent.getId());
-        URI createdUri = selfLinkBuilder.toUri();
+        URI createdUri = linkTo(EventController.class).slash(savedEvent.getId()).toUri();
         EventResource eventResource = new EventResource(savedEvent);
-        eventResource.add(linkTo(EventController.class).withRel("query-events"));
-        eventResource.add(selfLinkBuilder.withSelfRel());
-        eventResource.add(selfLinkBuilder.withRel("update-event"));
         return ResponseEntity.created(createdUri).body(eventResource);
     }
+
 }
