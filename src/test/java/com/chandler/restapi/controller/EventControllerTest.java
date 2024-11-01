@@ -54,14 +54,18 @@ class EventControllerTest {
                         .accept(MediaTypes.HAL_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.name").value("Event"))
                 .andExpect(jsonPath("$.description").value("Event with Spring"))
                 .andExpect(jsonPath("$.offline").value(Matchers.is(true)))
                 .andExpect(jsonPath("$.free").value(Matchers.is(false)))
                 .andExpect(jsonPath("$.eventStatus").value(DRAFT.name()))
-                .andExpect(header().exists(HttpHeaders.LOCATION))
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE));
+                .andExpect(jsonPath("$._links.self").exists())
+                .andExpect(jsonPath("$._links.query-events").exists())
+                .andExpect(jsonPath("$._links.update-event").exists())
+                ;
     }
 
     @Test
