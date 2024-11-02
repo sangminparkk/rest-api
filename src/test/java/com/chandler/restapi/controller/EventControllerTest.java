@@ -1,6 +1,7 @@
 package com.chandler.restapi.controller;
 
 import com.chandler.restapi.domain.Event;
+import com.chandler.restapi.repository.EventRepository;
 import com.chandler.restapi.request.EventDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
@@ -14,9 +15,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.stream.IntStream;
 
 import static com.chandler.restapi.domain.EventStatus.DRAFT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -30,6 +33,9 @@ class EventControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     @Test
     @DisplayName("이벤트 생성 후 정상 응답 처리")
@@ -142,5 +148,33 @@ class EventControllerTest {
     }
 
     //TODO: FieldErrors 에 대한 디테일 검증 필요
+
+    
+    @Test
+    @DisplayName("30개의 이벤트를 10개씩 두번째 페이지 조회하기")
+    public void queryEvents() throws Exception {
+        // given
+        IntStream.range(0, 30).forEach(this::generateEvent);
+
+        // when
+        this.mockMvc.perform(get("/api/events") // ?page=1&size=10&sort=DESC
+                        .param("page", "1")
+                        .param("size", "10")
+                        .param("sort","name,DESC")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                //TODO: Expect page information
+        ;
+    }
+
+    private void generateEvent(int index) {
+        var event = Event.builder()
+                .name("Event " + index)
+                .description("test event")
+                .build();
+        this.eventRepository.save(event);
+    }
+
 
 }
