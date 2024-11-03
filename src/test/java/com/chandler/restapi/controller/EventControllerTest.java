@@ -157,12 +157,12 @@ class EventControllerTest {
         IntStream.range(0, 30).forEach(this::generateEvent);
 
         // when
-        this.mockMvc.perform(get("/api/events") // ?page=1&size=10&sort=DESC
+        this.mockMvc.perform(get("/api/events")
                         .param("page", "1")
                         .param("size", "10")
-                        .param("sort","name,DESC")
+//                        .param("sort", "DESC")
                 )
-                .andDo(print())
+                .andDo(print()) 
                 .andExpect(status().isOk())
                 //TODO: Expect page information
         ;
@@ -175,6 +175,5 @@ class EventControllerTest {
                 .build();
         this.eventRepository.save(event);
     }
-
 
 }
