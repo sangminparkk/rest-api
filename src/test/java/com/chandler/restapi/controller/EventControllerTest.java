@@ -158,13 +158,15 @@ class EventControllerTest {
 
         // when
         this.mockMvc.perform(get("/api/events")
-                        .param("page", "1")
-                        .param("size", "10")
+                                .param("page", "1")
+                                .param("size", "10")
 //                        .param("sort", "DESC")
                 )
-                .andDo(print()) 
+                .andDo(print())
                 .andExpect(status().isOk())
-                //TODO: Expect page information
+                .andExpect(jsonPath("$.page").exists())
+                .andExpect(jsonPath("_embedded.eventList[0]._links.self").exists())
+                .andExpect(jsonPath("_links.self").exists())
         ;
     }
 
