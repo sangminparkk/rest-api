@@ -183,6 +183,15 @@ class EventControllerTest {
         ;
     }
 
+    @Test
+    @DisplayName("없는 이벤트를 조회하는 경우 404 응답받기")
+    public void getEvent_with_404_response() throws Exception {
+        this.mockMvc.perform(get("/api/events/{id}", 100L))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+        ;
+    }
+
     private Event generateEvent(int index) {
         var event = Event.builder()
                 .name("Event " + index)
