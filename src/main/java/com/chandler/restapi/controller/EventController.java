@@ -56,4 +56,16 @@ public class EventController {
         return ResponseEntity.ok().body(pageResource);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity getEvent(@PathVariable Long id) {
+        var optionalEvent = this.eventRepository.findById(id);
+
+        if (optionalEvent.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        // 리소스
+        EventResource eventResource = new EventResource(optionalEvent.get());
+        return ResponseEntity.ok().body(eventResource);
+    }
+
 }
