@@ -170,12 +170,25 @@ class EventControllerTest {
         ;
     }
 
-    private void generateEvent(int index) {
+    @Test
+    @DisplayName("기존 이벤트 하나 조회하기")
+    public void getEvent() throws Exception {
+        Event event = this.generateEvent(100);
+
+        this.mockMvc.perform(get("/api/events/{id}", event.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").exists())
+                .andExpect(jsonPath("_links.self").exists())
+        ;
+    }
+
+    private Event generateEvent(int index) {
         var event = Event.builder()
                 .name("Event " + index)
                 .description("test event")
                 .build();
-        this.eventRepository.save(event);
+        return this.eventRepository.save(event);
     }
 
 }
