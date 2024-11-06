@@ -218,7 +218,7 @@ class EventControllerTest {
 
     @Test
     @DisplayName("수정하려는 이벤트가 없는 경우 404 응답받기")
-    public void updateEvent_empty_404() throws Exception {
+    public void updateEvent_404() throws Exception {
         //given
         Event event = this.generateEvent(100);
         EventDto updateDto = modelMapper.map(event, EventDto.class);
