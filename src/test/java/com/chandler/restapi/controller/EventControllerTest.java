@@ -19,8 +19,7 @@ import java.util.stream.IntStream;
 
 import static com.chandler.restapi.domain.EventStatus.DRAFT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -189,6 +188,32 @@ class EventControllerTest {
         this.mockMvc.perform(get("/api/events/{id}", 100L))
                 .andDo(print())
                 .andExpect(status().isNotFound())
+        ;
+    }
+
+    @Test
+    @DisplayName("정상적으로 이벤트 수정하기")
+    public void updateEvent() throws Exception {
+        //given
+        Event event = this.generateEvent(100);
+        EventDto updateDto = EventDto.builder()
+                .name("Update event 101")
+                .description("update event")
+                .beginEnrollmentDateTime(LocalDateTime.of(2024, 10, 29, 1, 2))
+                .closeEnrollmentDateTime(LocalDateTime.of(2024, 10, 30, 1, 2))
+                .beginEventDateTime(LocalDateTime.of(2024, 11, 25, 1, 2))
+                .closeEventDateTime(LocalDateTime.of(2024, 11, 26, 1, 2))
+                .build();
+
+        //then
+        this.mockMvc.perform(patch("/api/events/update/{id}", event.getId())
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto))
+                        .accept(MediaTypes.HAL_JSON_VALUE))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("name").value("Update event 101"))
+                .andExpect(jsonPath("description").value("update event"))
         ;
     }
 
