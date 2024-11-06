@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,6 +36,9 @@ class EventControllerTest {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Test
     @DisplayName("이벤트 생성 후 정상 응답 처리")
@@ -196,24 +200,19 @@ class EventControllerTest {
     public void updateEvent() throws Exception {
         //given
         Event event = this.generateEvent(100);
-        EventDto updateDto = EventDto.builder()
-                .name("Update event 101")
-                .description("update event")
-                .beginEnrollmentDateTime(LocalDateTime.of(2024, 10, 29, 1, 2))
-                .closeEnrollmentDateTime(LocalDateTime.of(2024, 10, 30, 1, 2))
-                .beginEventDateTime(LocalDateTime.of(2024, 11, 25, 1, 2))
-                .closeEventDateTime(LocalDateTime.of(2024, 11, 26, 1, 2))
-                .build();
+        EventDto updateDto = modelMapper.map(event, EventDto.class);
+        String eventName = "Updated Event";
+        updateDto.setName(eventName);
 
         //then
-        this.mockMvc.perform(patch("/api/events/update/{id}", event.getId())
+        this.mockMvc.perform(put("/api/events/update/{id}", event.getId())
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDto))
                         .accept(MediaTypes.HAL_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("name").value("Update event 101"))
-                .andExpect(jsonPath("description").value("update event"))
+                .andExpect(jsonPath("name").value(eventName))
+                .andExpect(jsonPath("_link.self").exists())
         ;
     }
 
@@ -221,7 +220,19 @@ class EventControllerTest {
         var event = Event.builder()
                 .name("Event " + index)
                 .description("test event")
+                .beginEnrollmentDateTime(LocalDateTime.of(2024, 10, 29, 1, 2))
+                .closeEnrollmentDateTime(LocalDateTime.of(2024, 10, 30, 1, 2))
+                .beginEventDateTime(LocalDateTime.of(2024, 11, 25, 1, 2))
+                .closeEventDateTime(LocalDateTime.of(2024, 11, 26, 1, 2))
+                .basePrice(100)
+                .maxPrice(200)
+                .limitOfEnrollment(100)
+                .location("서울 OOO구 OOO센터")
+                .free(false)
+                .offline(true)
+                .eventStatus(DRAFT)
                 .build();
+
         return this.eventRepository.save(event);
     }
 
