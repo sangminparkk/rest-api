@@ -252,6 +252,25 @@ class EventControllerTest {
         ;
     }
 
+    @Test
+    @DisplayName("입력 데이터가 잘못 있는 경우 400 응답받기")
+    public void updateEvent_wrong_400() throws Exception {
+        //given
+        Event event = this.generateEvent(100);
+        EventDto updateDto = modelMapper.map(event, EventDto.class);
+        updateDto.setBasePrice(2000);
+        updateDto.setMaxPrice(100);
+
+        //then
+        this.mockMvc.perform(put("/api/events/{id}", event.getId())
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto))
+                        .accept(MediaTypes.HAL_JSON_VALUE))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
+    }
+
     private Event generateEvent(int index) {
         var event = Event.builder()
                 .name("Event " + index)
