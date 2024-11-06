@@ -216,6 +216,25 @@ class EventControllerTest {
         ;
     }
 
+    @Test
+    @DisplayName("수정하려는 이벤트가 없는 경우 404 응답받기")
+    public void updateEvent_empty_404() throws Exception {
+        //given
+        Event event = this.generateEvent(100);
+        EventDto updateDto = modelMapper.map(event, EventDto.class);
+        String eventName = "Updated Event";
+        updateDto.setName(eventName);
+
+        //then
+        this.mockMvc.perform(put("/api/events/123456789")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto))
+                        .accept(MediaTypes.HAL_JSON_VALUE))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+        ;
+    }
+
     private Event generateEvent(int index) {
         var event = Event.builder()
                 .name("Event " + index)
