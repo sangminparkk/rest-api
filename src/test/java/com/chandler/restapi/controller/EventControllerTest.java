@@ -205,14 +205,14 @@ class EventControllerTest {
         updateDto.setName(eventName);
 
         //then
-        this.mockMvc.perform(put("/api/events/update/{id}", event.getId())
+        this.mockMvc.perform(put("/api/events/{id}", event.getId())
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDto))
                         .accept(MediaTypes.HAL_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").value(eventName))
-                .andExpect(jsonPath("_link.self").exists())
+                .andExpect(jsonPath("_links.self").exists())
         ;
     }
 
