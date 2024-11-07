@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Builder
@@ -46,6 +47,9 @@ public class Event {
     private LocalDateTime beginEventDateTime;
 
     private LocalDateTime closeEventDateTime;
+
+    @ManyToOne(fetch = LAZY)
+    private Account account;
 
     public void update() {
         if (this.maxPrice == 0 && this.basePrice == 0) {
