@@ -14,8 +14,7 @@ import java.util.Set;
 
 import static com.chandler.restapi.domain.AccountRole.ADMIN;
 import static com.chandler.restapi.domain.AccountRole.USER;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class AccountServiceTest {
@@ -54,13 +53,13 @@ class AccountServiceTest {
     @Test
     @DisplayName("유저 정보가 없는 경우 NotFoundException")
     public void findByUsername_NotFound() throws Exception {
-        // given : 데이터를 넘길 필요가 없죠
-
-        // when
-        UserDetailsService userDetailsService = (UserDetailsService) accountService;
-
-        // then
-        assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername("username"));
+        String username = "username@naver.com";
+        try {
+            accountService.loadUserByUsername(username);
+            fail("supposed to be failed");
+        } catch (UsernameNotFoundException e) {
+            assertTrue(e.getMessage().contains(username));
+        }
     }
 
 }
