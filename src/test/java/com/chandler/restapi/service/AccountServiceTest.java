@@ -14,14 +14,12 @@ import java.util.Set;
 
 import static com.chandler.restapi.domain.AccountRole.ADMIN;
 import static com.chandler.restapi.domain.AccountRole.USER;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class AccountServiceTest {
 
-    /**
-     * mock 이 필요하지 않는 이유는, controller 호출할 필요가 없기 때문에
-     */
     @Autowired
     AccountService accountService;
 
@@ -53,13 +51,9 @@ class AccountServiceTest {
     @Test
     @DisplayName("유저 정보가 없는 경우 NotFoundException")
     public void findByUsername_NotFound() throws Exception {
+        //Expected
         String username = "username@naver.com";
-        try {
-            accountService.loadUserByUsername(username);
-            fail("supposed to be failed");
-        } catch (UsernameNotFoundException e) {
-            assertTrue(e.getMessage().contains(username));
-        }
+        assertThrows(UsernameNotFoundException.class, () -> accountService.loadUserByUsername(username)); // ExpectedException deprecated
     }
 
 }
