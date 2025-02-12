@@ -32,7 +32,17 @@ class EventControllerTest {
 
     @Test
     void createEvent() throws Exception {
-        var event = getEvent();
+        EventDto event = EventDto.builder()
+                .description("REST API with Spring")
+                .beginEnrollmentDateTime(LocalDateTime.of(2025, 2, 11, 12, 12,12))
+                .closeEnrollmentDateTime(LocalDateTime.of(2025, 2, 13, 12, 12,12))
+                .beginEventDateTime(LocalDateTime.of(2025, 2, 14, 12, 12,12))
+                .endEventDateTime(LocalDateTime.of(2025, 2, 15, 12, 12,12))
+                .basePrice(100)
+                .maxPrice(200)
+                .limitOfEnrollment(100)
+                .location("잠실역")
+                .build();
 
         mockMvc.perform(post("/api/events")
                         .contentType(APPLICATION_JSON)
@@ -49,10 +59,10 @@ class EventControllerTest {
         ;
     }
 
-    private static Event getEvent() {
-        var event = Event.builder()
+    @Test
+    void createEvent_Bad_Request() throws Exception {
+        Event event = Event.builder()
                 .id(100)
-                .name("Spring")
                 .description("REST API with Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2025, 2, 11, 12, 12,12))
                 .closeEnrollmentDateTime(LocalDateTime.of(2025, 2, 13, 12, 12,12))
@@ -66,7 +76,14 @@ class EventControllerTest {
                 .offline(false)
                 .eventStatus(PUBLISHED)
                 .build();
-        return event;
+
+        mockMvc.perform(post("/api/events")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(event))
+                        .accept(HAL_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
     }
 
 }
