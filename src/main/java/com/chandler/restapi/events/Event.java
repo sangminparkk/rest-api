@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+import static com.chandler.restapi.events.EventStatus.DRAFT;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -34,6 +35,6 @@ public class Event {
     private Boolean free;
 
     @Enumerated(value = STRING)
-    private EventStatus eventStatus;
+    private EventStatus eventStatus = DRAFT;
 
 }

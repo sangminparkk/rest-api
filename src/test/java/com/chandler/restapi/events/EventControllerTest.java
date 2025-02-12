@@ -1,6 +1,7 @@
 package com.chandler.restapi.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
+import static com.chandler.restapi.events.EventStatus.DRAFT;
+import static com.chandler.restapi.events.EventStatus.PUBLISHED;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -40,12 +43,15 @@ class EventControllerTest {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(header().exists(HttpHeaders.LOCATION)) // Type-safe, instead of "Location"
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, HAL_JSON_VALUE))
+                .andExpect(jsonPath("$.id").value(Matchers.not(100)))
+                .andExpect(jsonPath("$.free").value(Matchers.not(true)))
+                .andExpect(jsonPath("$.eventStatus").value(DRAFT.name()))
         ;
     }
 
     private static Event getEvent() {
         var event = Event.builder()
-                .id(1)
+                .id(100)
                 .name("Spring")
                 .description("REST API with Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2025, 2, 11, 12, 12,12))
@@ -56,6 +62,9 @@ class EventControllerTest {
                 .maxPrice(200)
                 .limitOfEnrollment(100)
                 .location("잠실역")
+                .free(true)
+                .offline(false)
+                .eventStatus(PUBLISHED)
                 .build();
         return event;
     }
