@@ -33,6 +33,7 @@ class EventControllerTest {
     @Test
     void createEvent() throws Exception {
         EventDto event = EventDto.builder()
+                .name("Spring")
                 .description("REST API with Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2025, 2, 11, 12, 12,12))
                 .closeEnrollmentDateTime(LocalDateTime.of(2025, 2, 13, 12, 12,12))
@@ -81,6 +82,19 @@ class EventControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(event))
                         .accept(HAL_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
+    }
+
+    @Test
+    public void createEvent_Bad_Request_Empty_Input() throws Exception {
+        EventDto eventDto = EventDto.builder().build();
+
+        mockMvc.perform(post("/api/events")
+                .contentType(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(eventDto))
+                .accept(HAL_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
         ;
