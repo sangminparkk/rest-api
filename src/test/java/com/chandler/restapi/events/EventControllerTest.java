@@ -1,5 +1,6 @@
 package com.chandler.restapi.events;
 
+import com.chandler.restapi.config.TestDescription;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ class EventControllerTest {
     ObjectMapper objectMapper;
 
     @Test
+    @TestDescription("정상적인 테스트 수행")
     void createEvent() throws Exception {
         EventDto event = EventDto.builder()
                 .name("Spring")
@@ -61,6 +63,7 @@ class EventControllerTest {
     }
 
     @Test
+    @TestDescription("입력 받을 수 없는 값을 사용한 경우 400 response")
     void createEvent_Bad_Request() throws Exception {
         Event event = Event.builder()
                 .id(100)
@@ -88,6 +91,7 @@ class EventControllerTest {
     }
 
     @Test
+    @TestDescription("입력값이 비어 있는 경우 400 response")
     public void createEvent_Bad_Request_Empty_Input() throws Exception {
         EventDto eventDto = EventDto.builder().build();
 
@@ -101,6 +105,7 @@ class EventControllerTest {
     }
 
     @Test
+    @TestDescription("입력값이 잘못된 경우 400 response")
     public void createEvent_Bad_Request_Wrong_Input() throws Exception {
         EventDto eventDto = EventDto.builder()
                 .name("Spring")
