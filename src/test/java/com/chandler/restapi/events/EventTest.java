@@ -2,6 +2,10 @@ package com.chandler.restapi.events;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,69 +36,52 @@ class EventTest {
 
 
     //TODO Unit test
-    @Test
-    void testFree() {
+    @ParameterizedTest
+    @MethodSource("parametersForTestFree")
+    void testFree(int basePrice, int maxPrice, boolean isFree) {
         //given
         Event event = Event.builder()
-                .basePrice(0)
-                .maxPrice(0)
+                .basePrice(basePrice)
+                .maxPrice(maxPrice)
                 .build();
 
         //when
         event.update();
 
         //then
-        assertEquals(event.getFree(), true);
-
-        //given
-        event = Event.builder()
-                .basePrice(100)
-                .maxPrice(0)
-                .build();
-
-        //when
-        event.update();
-
-        //then
-        assertEquals(event.getFree(), false);
-
-        //given
-        event = Event.builder()
-                .basePrice(0)
-                .maxPrice(100)
-                .build();
-
-        //when
-        event.update();
-
-        //then
-        assertEquals(event.getFree(), false);
+        assertEquals(event.getFree(), isFree);
     }
 
-    @Test
-    void testOffline() {
+    public static Stream<Object[]> parametersForTestFree() {
+        return Stream.of(
+                new Object[]{0, 0, true},
+                new Object[]{100, 0, false},
+                new Object[]{0, 100, false},
+                new Object[]{100, 200, false}
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersForTestOffline")
+    void testOffline(String location, boolean isOffline) {
         //given
         Event event = Event.builder()
-                .location("강남역 D2")
+                .location(location)
                 .build();
 
         //when
         event.update();
 
         //then
-        assertEquals(event.getOffline(), true);
-
-        //given
-        event = Event.builder()
-                .build();
-
-        //when
-        event.update();
-
-        //then
-        assertEquals(event.getOffline(), false);
+        assertEquals(event.getOffline(), isOffline);
     }
 
-
+    public static Stream<Object[]> parametersForTestOffline() {
+        return Stream.of(
+                new Object[]{"강남역 D2", true},
+                new Object[]{null, false},
+                new Object[]{"       ", false}
+        );
+    }
 
 }
