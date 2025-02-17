@@ -126,6 +126,11 @@ class EventControllerTest {
                         .accept(HAL_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0].objectName").exists())
+                .andExpect(jsonPath("$[0].code").exists())
+                .andExpect(jsonPath("$[0].defaultMessage").exists())
+                .andExpect(jsonPath("$[0].field").exists()) //TODO field error 가 없는 경우에는 해당 테스트가 깨지니까 이 부분 보강 필요
+                .andExpect(jsonPath("$[0].rejectedValue").exists())
         ;
     }
 
