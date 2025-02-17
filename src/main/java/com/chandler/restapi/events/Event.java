@@ -37,4 +37,17 @@ public class Event {
     @Enumerated(value = STRING)
     private EventStatus eventStatus = DRAFT;
 
+    public void update() {
+        if (this.basePrice == 0 && this.maxPrice == 0) {
+            this.free = true;
+        } else {
+            this.free = false;
+        }
+
+        if (this.location == null || this.location.isBlank()) { //TODO string 비어 있는지 체크하는 방법(컴팩트)
+            this.offline = false;
+        } else {
+            this.offline = true;
+        }
+    }
 }

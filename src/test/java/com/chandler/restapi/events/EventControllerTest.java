@@ -32,7 +32,7 @@ class EventControllerTest {
     ObjectMapper objectMapper;
 
     @Test
-    @TestDescription("정상적인 테스트 수행")
+    @TestDescription("정상적인 테스트 수행 - 비지니스 로직 추가")
     void createEvent() throws Exception {
         EventDto event = EventDto.builder()
                 .name("Spring")
@@ -57,7 +57,8 @@ class EventControllerTest {
                 .andExpect(header().exists(HttpHeaders.LOCATION)) // Type-safe, instead of "Location"
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, HAL_JSON_VALUE))
                 .andExpect(jsonPath("$.id").value(Matchers.not(100)))
-                .andExpect(jsonPath("$.free").value(Matchers.not(true)))
+                .andExpect(jsonPath("$.free").value(false))
+                .andExpect(jsonPath("$.offline").value(true))
                 .andExpect(jsonPath("$.eventStatus").value(DRAFT.name()))
         ;
     }
@@ -129,7 +130,7 @@ class EventControllerTest {
                 .andExpect(jsonPath("$[0].objectName").exists())
                 .andExpect(jsonPath("$[0].code").exists())
                 .andExpect(jsonPath("$[0].defaultMessage").exists())
-                .andExpect(jsonPath("$[0].field").exists()) //TODO field error 가 없는 경우에는 해당 테스트가 깨지니까 이 부분 보강 필요
+                .andExpect(jsonPath("$[0].field").exists()) //TODO field error가 없는 경우에는 해당 테스트가 깨지니까 이 부분 보강 필요
                 .andExpect(jsonPath("$[0].rejectedValue").exists())
         ;
     }

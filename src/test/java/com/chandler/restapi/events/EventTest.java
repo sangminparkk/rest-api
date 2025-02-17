@@ -31,4 +31,70 @@ class EventTest {
     }
 
 
+    //TODO Unit test
+    @Test
+    void testFree() {
+        //given
+        Event event = Event.builder()
+                .basePrice(0)
+                .maxPrice(0)
+                .build();
+
+        //when
+        event.update();
+
+        //then
+        assertEquals(event.getFree(), true);
+
+        //given
+        event = Event.builder()
+                .basePrice(100)
+                .maxPrice(0)
+                .build();
+
+        //when
+        event.update();
+
+        //then
+        assertEquals(event.getFree(), false);
+
+        //given
+        event = Event.builder()
+                .basePrice(0)
+                .maxPrice(100)
+                .build();
+
+        //when
+        event.update();
+
+        //then
+        assertEquals(event.getFree(), false);
+    }
+
+    @Test
+    void testOffline() {
+        //given
+        Event event = Event.builder()
+                .location("강남역 D2")
+                .build();
+
+        //when
+        event.update();
+
+        //then
+        assertEquals(event.getOffline(), true);
+
+        //given
+        event = Event.builder()
+                .build();
+
+        //when
+        event.update();
+
+        //then
+        assertEquals(event.getOffline(), false);
+    }
+
+
+
 }
